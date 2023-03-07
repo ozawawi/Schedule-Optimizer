@@ -45,10 +45,6 @@ The rest of the report will go as follows. Section 2 will introduce the differen
 
 ### DAY BY DAY MODEL 
 
-Combining all the above descriptions together we aim to have the following model: 
-
-![Alternate text](524_model.jpeg)    
-
 For this project our primary goal will be completing the following deadlines:
 
     - CS 524 Final Project 
@@ -182,7 +178,7 @@ $$
 
 
 
-A dependent task can only start if the tasks that it depends on are completed. An array called Dependecies will be initiliazed in the beginning that will hold a list of indicies that point out which tasks are dependent on (Example: Dependinces$[6]$ will print out an list of integers $[2,3]$. This means that Task 6 is dependent on Task 2 and 3).
+A dependent task can only start if the tasks that it depends on are completed. An array called Dependecies will be initiliazed in the beginning that will hold a list of indicies that point out which tasks are dependent on (Example: Dependinces[6] will print out an list of integers [2,3]. This means that Task 6 is dependent on Task 2 and 3).
 
 
 
