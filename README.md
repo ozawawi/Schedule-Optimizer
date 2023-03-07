@@ -1,8 +1,8 @@
-# Schedule-Optimizer
-
 ### CS/ECE/ISyE 524 &mdash; Introduction to Optimization &mdash; Spring 2021 ###
 
 ### Final Course Project: Due 5/2/21, 12:05pm
+
+# Course Schedular 
 
 ### Yasmine Abdennadher (abdennadher@wisc.edu), Hussain Alkhayat (halkhayat@wisc.edu), Omar Zawawi (ozawawi@wisc.edu)
 
@@ -29,14 +29,14 @@ To achieve this, we have created five main tasks with the following characterist
     
     -Difficulty: Each task will be rated on a difficulty from 1-3. This is 
     initialized by the user
-   
+       
     -Priority: This will be a dynamic parameter that changes from day to day based on the difficulty
     rating of the task and the deadline.
     
     -Room for error: Sometimes, certain tasks will take longer than expected. Room for error means to
     calculate extra hours that can be spent on a task each day. This variable is calculated based on
     difficulty and the total length of the task itself  
-    
+
 We also created a list of miscellaneous tasks with smaller durations meant to pop up throughout the week. Such tasks can be: going to the gym, grocery shopping, returning a package, and so on. These tasks will have similar characteristics as above and will disappear from the task array at the end of the day. 
 
 The rest of the report will go as follows. Section 2 will introduce the different models we plan on presenting and describe various aspects within them. Section 3 will hold the primary code of both models and the optimal schedules, and section 4 will highlight the difference between the two models and draw a conclusion. 
@@ -59,7 +59,7 @@ For this project our primary goal will be completing the following deadlines:
     - DepenedTask
         - This task depends on other tasks. 
         (i.e. This task CANNOT be started before finishing the tasks it depends on)
-    
+
 With one of the following as our pop up chores each day: 
 
     - Gym day 1
@@ -69,16 +69,20 @@ With one of the following as our pop up chores each day:
     - File Taxes
     - Groceries
     - Cleaning
-    
+
 For day one, New Tasks is represented as all the major tasks plus one of the chores. Then for all following days New Tasks will be one of the chores while Rolling Tasks will be the unfinished tasks from the previous days. 
 
 As stated in the introduction each task will have a list of characteristics that are calculated either at the beginning of the week or are updated day by day. Room for error for example will be a static characteristic that is only initilized at the beginning; whereas completness and priority is updated day by day to determine the best tasks to complete each day. These calculations are as follow:
 
-   - $\text{RoomForError} = \text{Difficulty} * 0.1$ 
-   - $\text{Completness} = \frac{\text{Curation} - \text{Completed hours for the task}}{\text{Duration}}$
-   - $Priority = \frac{Deadline Factor + (Duration - Completeness)}{(End Time - Current Day+1)*0.1}$
-       - $\text {where Deadline factor is a decimal that varies for each task day}\\ \text{by day based on how far away the deadline is to the current day}$ 
-       
+$$
+\begin{aligned}
+& \text{RoomForError} = \text{Difficulty} \times 0.1 \\
+& \text{Completeness} = \frac{\text{Curation} - \text{Completed hours for the task}}{\text{Duration}} \\
+& \text{Priority} = \frac{\text{Deadline Factor} + (\text{Duration} - \text{Completeness})}{(\text{End Time} - \text{Current Day}+1) \times 0.1} \\
+& \qquad \text{where Deadline factor is a decimal that varies for each task day} \\
+& \qquad \text{by day based on how far away the deadline is to the current day}
+\end{aligned}
+$$
 The main objective of this model is to maximize the priority each day; in other words, we want to ensure that we are completing the tasks with the highest priority first and then move on to the next.
 $$
 \begin{aligned}
@@ -89,14 +93,14 @@ Where i is the task index and j is the time slot within the day (in  the TIMES a
 
 To achieve this we implement the following constraints: 
 
-- $If$ $deadline$ $is$ $tonight$ $for$ $a$ $task$ 
-    - $Time$ $spent$ $on$ $specific$ $task \leq 6 hours$ 
-- $Otherwise$ 
-    - $Time$ $spent$ $on$ $specific$ $task \leq 3 hours$
-- $Amount$ $of$ $hours$ $put$ $in$ $task$ $today + Completed$ $Hours \leq Duration +$ $Room$ $for$ $Error$
-- $Sum$ $of$ $task$ $at$ $each$ $time \leq 1$
-- $Sum$ $of$ $hours$ $worked$ $in$ $a$ $day = 10$
-- $A$ $dependent$ $task$ $can$ $only$ $start$ $if$ $the$ $tasks$ $that$ $it$ $depends$ $on$ $are$ $completed$ 
+- If deadline is tonight for a task 
+  - Time spent on specific task ≤ 6 hours 
+- Otherwise 
+  - Time spent on specific task ≤ 3 hours
+- Amount of hours put in task today + Completed Hours ≤ Duration + Room for Error
+- Sum of task at each time ≤ 1
+- Sum of hours worked in a day = 10
+- A dependent task can only start if the tasks that it depends on are completed
 
 **To further explain the above constraints we have added a description for each one bellow**
 
@@ -107,20 +111,21 @@ $$
 T_{t[i]j} \in \{0,1\} i=1,\dots,7 j = TIMES array
 \end{aligned}
 $$
+
 T will look like this: 
 
-| Tasks\TIMES    | 10:00-10:15 | 10:15-10:30 | 10:30-10:45 | ...           | 21:45-22:00 |
-| -------------- |:-----------:| -----------:|------------:| ------------: |------------:|
-| CS 524 Project |      0      |      0      |      0      | ...           |      0      |
-| Reading Summary|      0      |      0      |      1      | ...           |      0      |
-| Calc 2 HW      |      0      |      0      |      0      | ...           |      0      |
-| Essay          |      1      |      1      |      0      | ...           |      0      |
-| Research       |      0      |      0      |      0      | ...           |      1      |
-| DependTask     |      0      |      0      |      0      | ...           |      0      |
+| Tasks\TIMES     | 10:00-10:15 | 10:15-10:30 | 10:30-10:45 |  ... | 21:45-22:00 |
+| --------------- | :---------: | ----------: | ----------: | ---: | ----------: |
+| CS 524 Project  |      0      |           0 |           0 |  ... |           0 |
+| Reading Summary |      0      |           0 |           1 |  ... |           0 |
+| Calc 2 HW       |      0      |           0 |           0 |  ... |           0 |
+| Essay           |      1      |           1 |           0 |  ... |           0 |
+| Research        |      0      |           0 |           0 |  ... |           1 |
+| DependTask      |      0      |           0 |           0 |  ... |           0 |
 
 
 - Then we begin laying out our constraints: 
-If a deadline is not due this current day then  the time required to work of the specified task is maximum six hours if the task is due tomorrow or three hours if it is due any other day. Otherwise, if the task is due this day then there will be no constraint on the hours spent on the task
+  If a deadline is not due this current day then  the time required to work of the specified task is maximum six hours if the task is due tomorrow or three hours if it is due any other day. Otherwise, if the task is due this day then there will be no constraint on the hours spent on the task
 
 $$
 \begin{aligned}
@@ -167,6 +172,7 @@ $$
 {\min}\displaystyle \sum_{j=1}^{7}\displaystyle \sum_{i=1}^{6}T_{ij}\\
 \end{aligned}
 $$
+
 $$
 \text{where i represents the tasks and j represents the days in the week} 
 $$
@@ -177,18 +183,22 @@ $$
 T_{ij} \ge 0 i=1,\dots,6 j = 1,\dots,7\\
 \end{aligned}
 $$
+
 $$
 \text{Where each slot in the array will hold amount of hours spent on each task thayt specific day}
 $$
 
 With the following constraints:
-- $Time$ $spent$ $on$ $a$ $task$ $is \geq Duration + Room$ $for$ $Error$
-- $Total$ $time$ $spent$ $on$ $all$ $tasks$ $each$ $day \leq 10$
-- $If$ $a$ $task$ $takes$ $more$ $than$ $3$ $days$ 
-    - $Time$ $spent$ $on$ $the$ $task$ $each$ $day \leq 6$
-- $otherwise$ 
-    - $Time$ $spent$ $on$ $the$ $task$ $each$ $day \leq 3$
-    
+$$
+\begin{aligned}
+& \text{Time spent on a task is} \geq \text{Duration + Room for Error} \\
+& \text{Total time spent on all tasks each day} \leq 10 \\
+& \text{If a task takes more than 3 days} \\
+& \qquad \text{Time spent on the task each day} \leq 6 \\
+& \text{Otherwise} \\
+& \qquad \text{Time spent on the task each day} \leq 3
+\end{aligned}
+$$
 The result of this optimization will provide the hours spent on each task each day. Which we will then push into a function to include breaks every three hours and print out a nice model. 
 
 # 3. Code 
@@ -202,7 +212,9 @@ using NamedArrays, JuMP, Gurobi
 ```
 
 ## DAY BY DAY MODEL
+
 ### Initilizing Tasks
+
     - We will begin my initializing our main tasks and creating the different parameters.  
 
 
@@ -244,7 +256,7 @@ println()
     Tasks: Essay | EndTime: 7 | Duration: 16 | Difficulty: 2 | Priority: 0.30000000000000004 | RoomForError: 0.2
     Tasks: Research | EndTime: 2 | Duration: 2 | Difficulty: 1 | Priority: 0.6666666666666666 | RoomForError: 0.1
     Tasks: DepenTask | EndTime: 7 | Duration: 2 | Difficulty: 3 | Priority: 0.125 | RoomForError: 0.30000000000000004
-    
+
 
 
 ### Aditional Functions 
@@ -339,6 +351,7 @@ end
 
 
 ### Optimization Problem
+
     - This main cell will hold a seven day for loop that solves the optmization problem each day. 
 
 
@@ -444,7 +457,7 @@ end
 
 ```
 
-    
+
     --------------------------------------------
     Warning: your license will expire in 5 days
     --------------------------------------------
@@ -582,32 +595,6 @@ end
 
 
 
-    Invalid coefficient -Inf on variable Task[ReadingSummary,10:00-10:15].
-
-    
-
-    Stacktrace:
-
-     [1] error(::String) at ./error.jl:33
-
-     [2] _assert_isfinite(::GenericAffExpr{Float64,VariableRef}) at /Users/yabdennadher/.julia/packages/JuMP/YXK4e/src/aff_expr.jl:330
-
-     [3] MathOptInterface.ScalarAffineFunction(::GenericAffExpr{Float64,VariableRef}) at /Users/yabdennadher/.julia/packages/JuMP/YXK4e/src/aff_expr.jl:358
-
-     [4] moi_function at /Users/yabdennadher/.julia/packages/JuMP/YXK4e/src/aff_expr.jl:364 [inlined]
-
-     [5] set_objective_function(::Model, ::GenericAffExpr{Float64,VariableRef}) at /Users/yabdennadher/.julia/packages/JuMP/YXK4e/src/objective.jl:110
-
-     [6] set_objective(::Model, ::MathOptInterface.OptimizationSense, ::GenericAffExpr{Float64,VariableRef}) at /Users/yabdennadher/.julia/packages/JuMP/YXK4e/src/objective.jl:128
-
-     [7] top-level scope at /Users/yabdennadher/.julia/packages/JuMP/YXK4e/src/macros.jl:801
-
-     [8] top-level scope at In[26]:67
-
-     [9] include_string(::Function, ::Module, ::String, ::String) at ./loading.jl:1091
-
-
-
 ```python
 for i in 1:length(Tasks)
     println(Tasks[i], ": ")
@@ -640,7 +627,7 @@ end
     DepenTask: 
     Total amount of hours spent: 3.0
     Initial Prediction: 2
-    
+
 
 
 ## WEEK MODEL
@@ -697,7 +684,7 @@ for day in 1:7
 end
 ```
 
-    
+
     --------------------------------------------
     Warning: your license will expire in 5 days
     --------------------------------------------
@@ -1107,7 +1094,7 @@ end
     Calc2: 0.0
     Essay: 3.0
     Research: 0.0
-    
+
 
 
 
@@ -1139,7 +1126,7 @@ end
     Research: 
     Total amount of hours spent: 2.2
     Initial Prediction: 2
-    
+
 
 
 # 4. Results and Discussion
@@ -1147,14 +1134,14 @@ end
 If we look at the results of the two models, we'll notice that the week model will try to work on each task every day until they're all done, which explains why we might see very short instances of a task in a day. Contrarily, the day-by-day model prioritizes performing the more urgent tasks first. Although it has longer times spent on each task, the day-by-day model gives better results because it considers factors like the deadline, duration, and completeness to assign each task an appropriate priority. By maximizing the priority of the tasks performed each day, the day-by-day model becomes able to organize its time better, achieve more efficiently, and offer a more convenient schedule for humans.
 
 
-| Tasks          |Predicted Hours| Day Result| Week Result|
-| -------------- |:-------------:| ---------:|-----------:|
-| CS 524 Project |      10       |    13.25  |     13     |
-| Reading Summary|       3       |    3.5    |     3.3    |
-| Calc 2 HW      |       3       |    3.75   |     3.6    |
-| Essay          |      16       |    19.25  |     19.2   |
-| Research       |       2       |    2.25   |     2.2    |
-| DependTask     |       2       |    2.75   |     N/A    |
+| Tasks           | Predicted Hours | Day Result | Week Result |
+| --------------- | :-------------: | ---------: | ----------: |
+| CS 524 Project  |       10        |      13.25 |          13 |
+| Reading Summary |        3        |        3.5 |         3.3 |
+| Calc 2 HW       |        3        |       3.75 |         3.6 |
+| Essay           |       16        |      19.25 |        19.2 |
+| Research        |        2        |       2.25 |         2.2 |
+| DependTask      |        2        |       2.75 |         N/A |
 
 In addition to the above tasks, the day-by-day model includes a task that demonstrates how dependecy will work in this scenario. In other words, we created a task called "DepenTask" that could only start once reading summary and calc 2 homewok are complete. Analyzing the printed out results in the day-by-day model, we see that this dependcy task only starts in the day once the two tasks have been worked on that week.       
 
