@@ -201,6 +201,8 @@ $$
 $$
 
 Next we implement the following variable:
+
+
 $$
 \begin{aligned}
 T_{ij} \ge 0 i=1,\dots,6 j = 1,\dots,7\\
@@ -208,10 +210,14 @@ T_{ij} \ge 0 i=1,\dots,6 j = 1,\dots,7\\
 $$
 
 $$
-\text{Where each slot in the array will hold amount of hours spent on each task thayt specific day}
+\text{Where each slot in the array will hold amount of hours spent on each task that specific day}
 $$
 
+
+
 With the following constraints:
+
+
 $$
 \begin{aligned}
 & \text{Time spent on a task is} \geq \text{Duration + Room for Error} \\
@@ -222,6 +228,8 @@ $$
 & \qquad \text{Time spent on the task each day} \leq 3
 \end{aligned}
 $$
+
+
 The result of this optimization will provide the hours spent on each task each day. Which we will then push into a function to include breaks every three hours and print out a nice model. 
 
 # 3. Code 
