@@ -3,6 +3,7 @@
 ### Final Course Project: Due 5/2/21, 12:05pm
 
 # Course Schedular 
+
 ### Yasmine Abdennadher (abdennadher@wisc.edu), Hussain Alkhayat (halkhayat@wisc.edu), Omar Zawawi (ozawawi@wisc.edu)
 
 *****
@@ -74,6 +75,7 @@ For day one, New Tasks is represented as all the major tasks plus one of the cho
 As stated in the introduction each task will have a list of characteristics that are calculated either at the beginning of the week or are updated day by day. Room for error for example will be a static characteristic that is only initilized at the beginning; whereas completness and priority is updated day by day to determine the best tasks to complete each day. These calculations are as follow:
 
 
+$$
 \begin{aligned}
 & \text{RoomForError} = \text{Difficulty} \times 0.1 \\
 & \text{Completeness} = \frac{\text{Curation} - \text{Completed hours for the task}}{\text{Duration}} \\
@@ -81,13 +83,19 @@ As stated in the introduction each task will have a list of characteristics that
 & \qquad \text{where Deadline factor is a decimal that varies for each task day} \\
 & \qquad \text{by day based on how far away the deadline is to the current day}
 \end{aligned}
+$$
+
 
 The main objective of this model is to maximize the priority each day; in other words, we want to ensure that we are completing the tasks with the highest priority first and then move on to the next.
+
+
 $$
 \begin{aligned}
 {\max} \displaystyle \sum_{i=1}^{7}\displaystyle \sum_{j= 10}^{22} P_i T_{t[i]j}\\
 \end{aligned}
 $$
+
+
 Where i is the task index and j is the time slot within the day (in  the TIMES array)
 
 To achieve this we implement the following constraints: 
@@ -105,25 +113,30 @@ To achieve this we implement the following constraints:
 
 - We first introduce the Task variable, which will be a binary matrix that is of the size $[\text{i in Tasks,j in TIMES}]$ The TIMES array will look as follows:
 
+  
+
 $$
 \begin{aligned}
 T_{t[i]j} \in \{0,1\} i=1,\dots,7 j = TIMES array
 \end{aligned}
 $$
+
+
+
 T will look like this: 
 
-| Tasks\TIMES    | 10:00-10:15 | 10:15-10:30 | 10:30-10:45 | ...           | 21:45-22:00 |
-| -------------- |:-----------:| -----------:|------------:| ------------: |------------:|
-| CS 524 Project |      0      |      0      |      0      | ...           |      0      |
-| Reading Summary|      0      |      0      |      1      | ...           |      0      |
-| Calc 2 HW      |      0      |      0      |      0      | ...           |      0      |
-| Essay          |      1      |      1      |      0      | ...           |      0      |
-| Research       |      0      |      0      |      0      | ...           |      1      |
-| DependTask     |      0      |      0      |      0      | ...           |      0      |
+| Tasks\TIMES     | 10:00-10:15 | 10:15-10:30 | 10:30-10:45 |  ... | 21:45-22:00 |
+| --------------- | :---------: | ----------: | ----------: | ---: | ----------: |
+| CS 524 Project  |      0      |           0 |           0 |  ... |           0 |
+| Reading Summary |      0      |           0 |           1 |  ... |           0 |
+| Calc 2 HW       |      0      |           0 |           0 |  ... |           0 |
+| Essay           |      1      |           1 |           0 |  ... |           0 |
+| Research        |      0      |           0 |           0 |  ... |           1 |
+| DependTask      |      0      |           0 |           0 |  ... |           0 |
 
 
 - Then we begin laying out our constraints: 
-If a deadline is not due this current day then  the time required to work of the specified task is maximum six hours if the task is due tomorrow or three hours if it is due any other day. Otherwise, if the task is due this day then there will be no constraint on the hours spent on the task
+  If a deadline is not due this current day then  the time required to work of the specified task is maximum six hours if the task is due tomorrow or three hours if it is due any other day. Otherwise, if the task is due this day then there will be no constraint on the hours spent on the task
 
 $$
 \begin{aligned}
@@ -138,24 +151,36 @@ $$
 $$
 
 The amount of hours spent on a task each day plus the completed hours in the previous day must be less than or equal to the total duration of the task plus the initialized room for error. 
+
+
 $$
 \begin{aligned}
 \displaystyle \sum_{i=\text{task 1}}^{\text{task 7}}(\displaystyle \sum_{i= 10}^{22} T_{i,j})0.25 + C_i \le D_i + (D_iR)\\
 \text{where D = day, C = completness of the task, and R = room for error}\\
 \end{aligned}
 $$
+
+
 During each time period there must at most one task within that slot  
+
+
 $$
 \begin{aligned}
 \displaystyle \sum_{i=\text{task 1}}^{\text{task 7}}\displaystyle \sum_{i= 10}^{22} T_{ij} \le 1
 \end{aligned}
 $$
+
+
 Each day there are ten total work hours
+
+
 $$
 \begin{aligned}
 \displaystyle \sum_{i= 10}^{22} T_{:j} \le 10
 \end{aligned}
 $$
+
+
 
 A dependent task can only start if the tasks that it depends on are completed. An array called Dependecies will be initiliazed in the beginning that will hold a list of indicies that point out which tasks are dependent on (Example: Dependinces$[6]$ will print out an list of integers $[2,3]$. This means that Task 6 is dependent on Task 2 and 3).
 
@@ -170,6 +195,7 @@ $$
 {\min}\displaystyle \sum_{j=1}^{7}\displaystyle \sum_{i=1}^{6}T_{ij}\\
 \end{aligned}
 $$
+
 $$
 \text{where i represents the tasks and j represents the days in the week} 
 $$
@@ -180,6 +206,7 @@ $$
 T_{ij} \ge 0 i=1,\dots,6 j = 1,\dots,7\\
 \end{aligned}
 $$
+
 $$
 \text{Where each slot in the array will hold amount of hours spent on each task thayt specific day}
 $$
@@ -208,7 +235,9 @@ using NamedArrays, JuMP, Gurobi
 ```
 
 ## DAY BY DAY MODEL
+
 ### Initilizing Tasks
+
     - We will begin my initializing our main tasks and creating the different parameters.  
 
 
@@ -345,6 +374,7 @@ end
 
 
 ### Optimization Problem
+
     - This main cell will hold a seven day for loop that solves the optmization problem each day. 
 
 
@@ -1127,14 +1157,14 @@ end
 If we look at the results of the two models, we'll notice that the week model will try to work on each task every day until they're all done, which explains why we might see very short instances of a task in a day. Contrarily, the day-by-day model prioritizes performing the more urgent tasks first. Although it has longer times spent on each task, the day-by-day model gives better results because it considers factors like the deadline, duration, and completeness to assign each task an appropriate priority. By maximizing the priority of the tasks performed each day, the day-by-day model becomes able to organize its time better, achieve more efficiently, and offer a more convenient schedule for humans.
 
 
-| Tasks          |Predicted Hours| Day Result| Week Result|
-| -------------- |:-------------:| ---------:|-----------:|
-| CS 524 Project |      10       |    13.25  |     13     |
-| Reading Summary|       3       |    3.5    |     3.3    |
-| Calc 2 HW      |       3       |    3.75   |     3.6    |
-| Essay          |      16       |    19.25  |     19.2   |
-| Research       |       2       |    2.25   |     2.2    |
-| DependTask     |       2       |    2.75   |     N/A    |
+| Tasks           | Predicted Hours | Day Result | Week Result |
+| --------------- | :-------------: | ---------: | ----------: |
+| CS 524 Project  |       10        |      13.25 |          13 |
+| Reading Summary |        3        |        3.5 |         3.3 |
+| Calc 2 HW       |        3        |       3.75 |         3.6 |
+| Essay           |       16        |      19.25 |        19.2 |
+| Research        |        2        |       2.25 |         2.2 |
+| DependTask      |        2        |       2.75 |         N/A |
 
 In addition to the above tasks, the day-by-day model includes a task that demonstrates how dependecy will work in this scenario. In other words, we created a task called "DepenTask" that could only start once reading summary and calc 2 homewok are complete. Analyzing the printed out results in the day-by-day model, we see that this dependcy task only starts in the day once the two tasks have been worked on that week.       
 
