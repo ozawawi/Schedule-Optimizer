@@ -3,7 +3,6 @@
 ### Final Course Project: Due 5/2/21, 12:05pm
 
 # Course Schedular 
-
 ### Yasmine Abdennadher (abdennadher@wisc.edu), Hussain Alkhayat (halkhayat@wisc.edu), Omar Zawawi (ozawawi@wisc.edu)
 
 *****
@@ -111,21 +110,20 @@ $$
 T_{t[i]j} \in \{0,1\} i=1,\dots,7 j = TIMES array
 \end{aligned}
 $$
-
 T will look like this: 
 
-| Tasks\TIMES     | 10:00-10:15 | 10:15-10:30 | 10:30-10:45 |  ... | 21:45-22:00 |
-| --------------- | :---------: | ----------: | ----------: | ---: | ----------: |
-| CS 524 Project  |      0      |           0 |           0 |  ... |           0 |
-| Reading Summary |      0      |           0 |           1 |  ... |           0 |
-| Calc 2 HW       |      0      |           0 |           0 |  ... |           0 |
-| Essay           |      1      |           1 |           0 |  ... |           0 |
-| Research        |      0      |           0 |           0 |  ... |           1 |
-| DependTask      |      0      |           0 |           0 |  ... |           0 |
+| Tasks\TIMES    | 10:00-10:15 | 10:15-10:30 | 10:30-10:45 | ...           | 21:45-22:00 |
+| -------------- |:-----------:| -----------:|------------:| ------------: |------------:|
+| CS 524 Project |      0      |      0      |      0      | ...           |      0      |
+| Reading Summary|      0      |      0      |      1      | ...           |      0      |
+| Calc 2 HW      |      0      |      0      |      0      | ...           |      0      |
+| Essay          |      1      |      1      |      0      | ...           |      0      |
+| Research       |      0      |      0      |      0      | ...           |      1      |
+| DependTask     |      0      |      0      |      0      | ...           |      0      |
 
 
 - Then we begin laying out our constraints: 
-  If a deadline is not due this current day then  the time required to work of the specified task is maximum six hours if the task is due tomorrow or three hours if it is due any other day. Otherwise, if the task is due this day then there will be no constraint on the hours spent on the task
+If a deadline is not due this current day then  the time required to work of the specified task is maximum six hours if the task is due tomorrow or three hours if it is due any other day. Otherwise, if the task is due this day then there will be no constraint on the hours spent on the task
 
 $$
 \begin{aligned}
@@ -172,7 +170,6 @@ $$
 {\min}\displaystyle \sum_{j=1}^{7}\displaystyle \sum_{i=1}^{6}T_{ij}\\
 \end{aligned}
 $$
-
 $$
 \text{where i represents the tasks and j represents the days in the week} 
 $$
@@ -183,7 +180,6 @@ $$
 T_{ij} \ge 0 i=1,\dots,6 j = 1,\dots,7\\
 \end{aligned}
 $$
-
 $$
 \text{Where each slot in the array will hold amount of hours spent on each task thayt specific day}
 $$
@@ -212,9 +208,7 @@ using NamedArrays, JuMP, Gurobi
 ```
 
 ## DAY BY DAY MODEL
-
 ### Initilizing Tasks
-
     - We will begin my initializing our main tasks and creating the different parameters.  
 
 
@@ -351,7 +345,6 @@ end
 
 
 ### Optimization Problem
-
     - This main cell will hold a seven day for loop that solves the optmization problem each day. 
 
 
@@ -1134,14 +1127,14 @@ end
 If we look at the results of the two models, we'll notice that the week model will try to work on each task every day until they're all done, which explains why we might see very short instances of a task in a day. Contrarily, the day-by-day model prioritizes performing the more urgent tasks first. Although it has longer times spent on each task, the day-by-day model gives better results because it considers factors like the deadline, duration, and completeness to assign each task an appropriate priority. By maximizing the priority of the tasks performed each day, the day-by-day model becomes able to organize its time better, achieve more efficiently, and offer a more convenient schedule for humans.
 
 
-| Tasks           | Predicted Hours | Day Result | Week Result |
-| --------------- | :-------------: | ---------: | ----------: |
-| CS 524 Project  |       10        |      13.25 |          13 |
-| Reading Summary |        3        |        3.5 |         3.3 |
-| Calc 2 HW       |        3        |       3.75 |         3.6 |
-| Essay           |       16        |      19.25 |        19.2 |
-| Research        |        2        |       2.25 |         2.2 |
-| DependTask      |        2        |       2.75 |         N/A |
+| Tasks          |Predicted Hours| Day Result| Week Result|
+| -------------- |:-------------:| ---------:|-----------:|
+| CS 524 Project |      10       |    13.25  |     13     |
+| Reading Summary|       3       |    3.5    |     3.3    |
+| Calc 2 HW      |       3       |    3.75   |     3.6    |
+| Essay          |      16       |    19.25  |     19.2   |
+| Research       |       2       |    2.25   |     2.2    |
+| DependTask     |       2       |    2.75   |     N/A    |
 
 In addition to the above tasks, the day-by-day model includes a task that demonstrates how dependecy will work in this scenario. In other words, we created a task called "DepenTask" that could only start once reading summary and calc 2 homewok are complete. Analyzing the printed out results in the day-by-day model, we see that this dependcy task only starts in the day once the two tasks have been worked on that week.       
 
