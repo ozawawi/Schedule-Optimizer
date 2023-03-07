@@ -73,7 +73,7 @@ For day one, New Tasks is represented as all the major tasks plus one of the cho
 
 As stated in the introduction each task will have a list of characteristics that are calculated either at the beginning of the week or are updated day by day. Room for error for example will be a static characteristic that is only initilized at the beginning; whereas completness and priority is updated day by day to determine the best tasks to complete each day. These calculations are as follow:
 
-$$
+
 \begin{aligned}
 & \text{RoomForError} = \text{Difficulty} \times 0.1 \\
 & \text{Completeness} = \frac{\text{Curation} - \text{Completed hours for the task}}{\text{Duration}} \\
@@ -81,7 +81,7 @@ $$
 & \qquad \text{where Deadline factor is a decimal that varies for each task day} \\
 & \qquad \text{by day based on how far away the deadline is to the current day}
 \end{aligned}
-$$
+
 The main objective of this model is to maximize the priority each day; in other words, we want to ensure that we are completing the tasks with the highest priority first and then move on to the next.
 $$
 \begin{aligned}
