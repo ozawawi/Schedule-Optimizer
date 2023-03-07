@@ -4,7 +4,6 @@
 
 ### Final Course Project: Due 5/2/21, 12:05pm
 
-# Course Schedular 
 ### Yasmine Abdennadher (abdennadher@wisc.edu), Hussain Alkhayat (halkhayat@wisc.edu), Omar Zawawi (ozawawi@wisc.edu)
 
 *****
