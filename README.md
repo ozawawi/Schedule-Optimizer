@@ -74,7 +74,7 @@ As stated in the introduction each task will have a list of characteristics that
 $$
 \begin{aligned}
 & \text{RoomForError} = \text{Difficulty} \times 0.1 \\
-& \text{Completeness} = \frac{\text{Curation} - \text{Completed hours for the task}}{\text{Duration}} \\
+& \text{Completeness} = \frac{\text{Duration} - \text{Completed hours for the task}}{\text{Duration}} \\
 & \text{Priority} = \frac{\text{Deadline Factor} + (\text{Duration} - \text{Completeness})}{(\text{End Time} - \text{Current Day}+1) \times 0.1} \\
 & \qquad \text{where Deadline factor is a decimal that varies for each task day} \\
 & \qquad \text{by day based on how far away the deadline is to the current day}
